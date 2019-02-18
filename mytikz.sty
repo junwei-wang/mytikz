@@ -1,0 +1,72 @@
+\ProvidesPackage{mytikz}[2019/02/19 v0.1 My gallery of TikZ]
+\RequirePackage{tikz}
+
+\newcommand\ckey[1][]{%
+  \begin{scope}
+    \draw[#1,fill=#1] (0,0) circle (0.45);
+    \draw[white,fill=white] (-0.2,0) circle (0.10);
+    \draw[#1,fill=#1] (0.35,0.15) -- (1.3,0.15) -- (1.5,0) -- (1.3,-0.15)
+    -- (1.2,-0.05) -- (1.1,-0.15)
+    -- (1.0,-0.05) -- (0.9,-0.15)
+    -- (0.8,-0.05) -- (0.7,-0.16)
+    -- (0.35,-0.16) -- cycle;
+  \end{scope}
+}
+
+\usetikzlibrary{decorations.pathmorphing}
+\tikzset{%
+  fileline/.style={
+    gray, thick, decorate,
+    decoration={snake,amplitude=.4mm,segment length=2mm,post length=0mm}
+  },
+}
+\newcommand\cfile{%
+  \begin{scope}%
+    \tikzset{%
+      fileline/.style={%
+        gray, thick, decorate,%
+        decoration={snake,amplitude=.4mm,segment length=2mm,post length=0mm}%
+      },%
+    }%
+    \file@draw%
+  \end{scope}%
+}
+
+\def\file@draw{
+  \draw[darkgray, very thick] (0,0) -- (0,3.6) -- (2.1,3.6) -- (2.1,2.4) -- (3,2.4) -- (3,0) -- cycle;
+  \draw[darkgray, very thick] (2.1,3.6) -- (3,2.4);
+  \draw[fileline] (0.6,1.8) -- (2.4,1.8);
+  \draw[fileline] (0.6,2.4) -- (1.8,2.4);
+  \draw[fileline] (0.6,3) -- (1.8,3);
+  \draw[fileline] (0.6,0.6) -- (2.4,0.6);
+  \draw[fileline] (0.6,1.2) -- (2.4,1.2);
+}
+
+\newcommand\ckeyedfile[1]{%
+  \begin{scope}
+    \draw[darkgray, very thick] (0,0) -- (0,3.6) -- (2.1,3.6) -- (2.1,2.4) -- (3,2.4) -- (3,0) -- cycle;
+    \draw[darkgray, very thick] (2.1,3.6) -- (3,2.4);
+    \draw[fileline] (0.6,1.8) -- (2.4,1.8);
+    \draw[fileline] (0.6,2.4) -- (1.8,2.4);
+    \draw[fileline] (0.6,3) -- (1.8,3);
+    \node[scale=0.8] at (1.5,1) {\tikz \ckey[#1];};
+  \end{scope}
+}
+
+
+% #1 number of teeths
+% #2 radius intern
+% #3 radius extern
+% #4 angle from start to end of the first arc
+% #5 angle to decale the second arc from the first
+% #6 inner radius to cut off
+% from: https://tex.stackexchange.com/questions/58702/creating-gears-in-tikz
+
+\newcommand{\gear}[6]{%
+  (0:#2)
+  \foreach \i [evaluate=\i as \n using {\i-1)*360/#1}] in {1,...,#1}{%
+    arc (\n:\n+#4:#2) {[rounded corners=1.5pt] -- (\n+#4+#5:#3)
+    arc (\n+#4+#5:\n+360/#1-#5:#3)} --  (\n+360/#1:#2)
+  }%
+  (0,0) circle[radius=#6]
+}
